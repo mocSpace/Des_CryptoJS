@@ -1,0 +1,64 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>asasas</title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="CryptoJS-3.1.2/rollups/tripledes.js"></script>
+    <script src="CryptoJS-3.1.2/components/mode-ecb.js"></script>
+    <script>
+        //DES 加密
+        function encryptByDES(message, key) {
+            var keyHex = CryptoJS.enc.Utf8.parse(key);
+            var encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            return encrypted.toString();
+        }
+        //DES 解密
+        function decryptByDES(ciphertext, key) {
+            var keyHex = CryptoJS.enc.Utf8.parse(key);
+            // direct decrypt ciphertext
+            var decrypted = CryptoJS.DES.decrypt({
+                ciphertext: CryptoJS.enc.Base64.parse(ciphertext)
+            }, keyHex, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            return decrypted.toString(CryptoJS.enc.Utf8);
+        }
+    </script>
+    <script>
+        function encryptStr() {
+            var strKey = $.trim($('#key').val());
+            var data = $.trim($('#data').val());
+            var strMsg = JSON.stringify(data);
+            $('#text2').val(encryptByDES(strMsg, strKey));
+
+//            console.log(JSON.stringify(data));
+//            console.log();
+        }
+
+        function decryptStr() {
+            var strKey = $.trim($('#key').val());
+            var ciphertext = $.trim($('#text2').val());
+            $('#text3').val(decryptByDES(ciphertext, strKey));
+        }
+    </script>
+</head>
+<body>
+<h1>DES 加密/解密</h1>
+<label>key</label>
+<input type="text" value='' placeholder="请输入密钥" id="key" style="width: 300px"/>
+<label>加密Message</label>
+<input type="text" value='' placeholder="请输入Message" id="data" style="width: 400px"/>
+<div style="margin-top: 20px">
+    <input type="button" value="加密" onclick="encryptStr();"/>
+    <textarea id="text2" rows="10" cols="50"></textarea>
+    <input type="button" value="解密" onclick="decryptStr();"/>
+    <textarea id="text3" rows="10" cols="50"></textarea>
+</div>
+</div>
+</body>
+</html>
